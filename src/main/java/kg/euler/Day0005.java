@@ -1,7 +1,5 @@
 package kg.euler;
 
-import java.util.ArrayList;
-
 public class Day0005 {
     public static void main(String[] args) {
         solution(20);

@@ -2,8 +2,6 @@ package kg.euler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class Day0003 {
     public static void main(String[] args) {
