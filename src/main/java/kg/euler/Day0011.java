@@ -35,7 +35,8 @@ public class Day0011 {
         solution(lists, 4);
     }
 
-    //Find the sum of all the primes below two million.
+    //What is the greatest product of four adjacent numbers in the same direction
+    // (up, down, left, right, or diagonally) in the 20x20 grid?
     static long solution(List<List<Integer>> matrix, int len) {
         long product = 1L;
         long result = 0L;
