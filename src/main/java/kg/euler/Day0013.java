@@ -154,7 +154,7 @@ public class Day0013 {
         Deque<Integer> resultQ = new LinkedList<>();
         int remainder = 0;
         int sumDigit = 0;
-        while(!(q1.isEmpty() && q2.isEmpty())) {
+        while(!q1.isEmpty() || !q2.isEmpty()) {
             int a = Optional.ofNullable(q1.pollLast()).orElse(0);
             int b = Optional.ofNullable(q2.pollLast()).orElse(0);
             int res = a + b + remainder;
