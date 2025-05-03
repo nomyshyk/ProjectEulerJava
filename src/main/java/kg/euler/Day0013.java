@@ -2,13 +2,9 @@ package kg.euler;
 
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
 
 public class Day0013 {
 
@@ -115,22 +111,28 @@ public class Day0013 {
             53503534226472524250874054075591789781264330331690
             """;
     public static void main(String[] args) {
-        solution(numbers);
+        solution(numbers, 10);
     }
 
     //Work out the first ten digits of the sum of the following one-hundred
     //50-digit numbers.
-    static long solution(String numbers) {
+    static String solution(String numbers, int numDigits) {
         List<Deque<Integer>> deques = parseInputToQueues(numbers);
 
         Deque<Integer> currentDeque = new LinkedList<>();
+        //System.out.println(deques.get(0));
         currentDeque.addAll(deques.get(0));
         for(int i = 1; i < deques.size(); i++) {
             currentDeque = summarizeTwoQueues(currentDeque, deques.get(i));
         }
 
-        System.out.println(currentDeque);
-        return 0L;
+        //System.out.println(currentDeque);
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < numDigits; i ++) {
+            sb.append(currentDeque.pollFirst());
+        }
+        System.out.println(sb);
+        return sb.toString();
     }
 
     // Lets do some digit based logic, avoiding BigDecimal things
@@ -150,11 +152,10 @@ public class Day0013 {
     }
 
     static Deque<Integer> summarizeTwoQueues(Deque<Integer> q1, Deque<Integer> q2) {
-
         Deque<Integer> resultQ = new LinkedList<>();
         int remainder = 0;
         int sumDigit = 0;
-        while(!q1.isEmpty() || !q2.isEmpty()) {
+        while(!q1.isEmpty() || !q2.isEmpty() || remainder !=0) {
             int a = Optional.ofNullable(q1.pollLast()).orElse(0);
             int b = Optional.ofNullable(q2.pollLast()).orElse(0);
             int res = a + b + remainder;
