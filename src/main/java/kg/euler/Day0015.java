@@ -64,12 +64,10 @@ public class Day0015 {
                     matrix[i][j] = 0;
                 }
                 // 1-st row and column is always 1, except [0,0] which is = 0
-                else if(i == 0) {
-                    matrix[i][j] = 1;
-                } else if (j == 0) {
+                else if(i == 0 || j == 0) {
                     matrix[i][j] = 1;
                 }
-                // summarize adjacent
+                // summarize adjacent up and left
                 else {
                     matrix[i][j] = matrix[i-1][j] + matrix[i][j-1];
                 }
