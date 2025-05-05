@@ -17,7 +17,6 @@ public class Day0015 {
     // How many such routes are there through a
     // 20 x 20 grid?
     static long solution(int maxWidthNLength) {
-
         long[][] matrix = new long[maxWidthNLength][maxWidthNLength];
         long result = summarizeAdjacent(matrix);
         return result;
