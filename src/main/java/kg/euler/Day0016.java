@@ -13,6 +13,7 @@ public class Day0016 {
     }
 
     // What is the sum of the digits of the number 2^1000
+    // its not funny to use BigDecimal. Implemented own multiply logic based on Strings
     static long solution() {
         List<String> nums = generateStringNumberList(2, 20, 50);
 
