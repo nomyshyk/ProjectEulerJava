@@ -42,43 +42,64 @@ public class Day0017 {
             1000,thousand""";
     static Map <Integer, String> mapVal = parseInput(vals);
     public static void main(String[] args) {
-        System.out.println(mapVal);
-        solution(30);
+        //System.out.println(mapVal);
+        solution(1000);
     }
 
 
     // If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words,
     // how many letters would be used?
     static long solution(int number) {
-        int curNumber = number;
-        int zeros = (int)Math.floor(Math.log10(curNumber));
-        System.out.println(zeros);
-        StringBuilder sb = new StringBuilder();
-        while (curNumber >= 1) {
+        int totalLetters = 0;
+        for(int i = 1; i <= number; i++){
+            String word = numberToWord(i);
+            totalLetters += countLetters(word);
+        }
+        System.out.println("Total lettets number = " + totalLetters);
+        return totalLetters;
+    }
 
-            int razr = (int) Math.pow(10, zeros);
-            double modulo = curNumber % razr;
-
-            if(modulo == 0 && curNumber >= 100) {
-                int head = curNumber / razr;
-                sb.append(mapVal.get(head)).append(" ").append(mapVal.get(razr));
-            } else if(modulo == 0) {
-                //int head = curNumber / razr;
-                sb.append(mapVal.get(curNumber));
+    static int countLetters(String text) {
+        int cnt = 0;
+        for(int i = 0; i < text.length(); i++){
+            if(text.charAt(i) != ' '){
+                cnt++;
             }
+        }
+        return cnt;
+    }
 
+    static String numberToWord(int number) {
+        int curNumber = number;
+        StringBuilder sb = new StringBuilder();
+        boolean hasHundreds = false;
+        boolean andAdded = false;
+        while (curNumber >= 1) {
+            int zeros = (int)Math.floor(Math.log10(curNumber));
 
-            curNumber = Math.floorDiv(curNumber, 10);
+            int lead = Math.floorDiv(curNumber, (int) Math.pow(10, zeros));
+            int substract = (int) Math.pow(10, zeros);
 
-//            String numStr = mapVal.get(curNumber);
-//            if(numStr != null) {
-//                sb.append(mapVal).append(" ");
-//            }
-//            curNumber /= 10;
-            break;
+            if(lead * substract >= 100) {
+                sb.append(mapVal.get(lead)).append(" ").append(mapVal.get(substract)).append(" ");
+                hasHundreds = true;
+            } else
+            {
+                if(hasHundreds && !andAdded) {
+                    sb.append("and ");
+                    andAdded = true;
+                }
+                if(mapVal.get(curNumber) != null) {
+                    sb.append(mapVal.get(curNumber)).append(" ");
+                    break;
+                } else if(mapVal.get(lead * substract) != null) {
+                    sb.append(mapVal.get(lead * substract)).append(" ");
+                }
+            }
+            curNumber -= lead * substract;
         };
-        System.out.println(sb.toString());
-        return 0L;
+        System.out.println("number " + number + " is = " + sb.toString());
+        return sb.toString();
     }
 
     static Map<Integer, String> parseInput(String str) {
