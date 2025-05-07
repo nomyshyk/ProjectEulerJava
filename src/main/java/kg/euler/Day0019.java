@@ -11,9 +11,9 @@ public class Day0019 {
         int[] dmyBeg = dmyArray(dateBeg);
         int[] dmyEnd = dmyArray(dateEnd);
 
-        countSpecificDayOfAWeekInPeriod(7, dmyBeg, dmyEnd, 1);
+        int result = countSpecificDayOfAWeekInPeriod(7, dmyBeg, dmyEnd, 1);
 
-        return 0L;
+        return result;
     }
 
     static int daysInMonths(int year, int month) {
