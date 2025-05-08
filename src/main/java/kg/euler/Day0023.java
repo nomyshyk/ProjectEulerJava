@@ -1,29 +1,42 @@
 package kg.euler;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Day0023 {
 
     public static void main(String[] args) {
-        solution(10000);
+        solution(28123);
     }
 
     // Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
     static long solution(int num) {
-        abundantNumList(28123);
-        //abundantNumList(20);
-        return 0;
+        List<Integer> abundantNums = abundantNumList(num);
+        Set<Integer> uniqueSums = new HashSet<>();
+        for(int i = 0; i < abundantNums.size(); i++) {
+            for(int j = i; j < abundantNums.size()-1; j++) {
+                uniqueSums.add(abundantNums.get(i) + abundantNums.get(j));
+            }
+        }
+
+        long totalSumma = 0;
+        for (int i = 0; i <= num; i++) {
+            totalSumma += i;
+        }
+        System.out.printf("total eq or less to %s is %s \n", num, totalSumma);
+        long razn = totalSumma;
+        for (Integer val : uniqueSums) {
+            if(val <= num) {
+                razn -= val;
+            }
+        }
+
+        System.out.printf("result is %s \n", razn);
+        return razn;
     }
 
     static List<Integer> abundantNumList(int maxNum) {
