@@ -2,55 +2,43 @@ package kg.euler;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class Day0025 {
 
     public static void main(String[] args) {
-        solution("0123456789", 1000000);
+        solution(1000);
     }
 
     // What is the index of the first term in the Fibonacci sequence to contain 1000 digits?
-    static String solution(String permutatingStr, int limit) {
-        return null;
+    static long solution(int limit) {
+        return fibonacciSequence(limit);
     }
 
     static long fibonacciSequence (int maxLength) {
-        StringBuilder summa = new StringBuilder("1");
-        StringBuilder prevVal = new StringBuilder("1");
-        while (summa.length() <= 1000) {
-            summarizeTwoQueues();
-        }
-        for(int i = 0; ; i++) {
-            if (summa >= max) {
+
+        Deque<Integer> q1 = new LinkedList<>();
+        Deque<Integer> q2 = new LinkedList<>();
+        q1.add(1);
+        q2.add(1);
+        int iter = 2;
+        while (q1.size() <= maxLength) {
+            Deque<Integer> ni = new LinkedList<>(q1);
+            q1 = summarizeTwoQueues(q1, q2);
+            iter++;
+            if(q1.size() >= maxLength) {
                 break;
             }
-            queue.add(summa);
-
-            summa = queue.poll() + summa;
-            result += (summa%2==0) ? summa : 0;
+            q2 = ni;
         }
-        System.out.println(result);
-        return result;
+        System.out.println(q1);
+        System.out.println("iter = " + iter);
+        return iter;
     }
-
-    static String summarizeTwoStrings(String s1, String s2) {
-        //Deque<Integer> resultQ = new LinkedList<>();
-        StringBuilder sb1 = new StringBuilder(s1);
-        StringBuilder sb2 = new StringBuilder(s2);
+    static Deque<Integer> summarizeTwoQueues(Deque<Integer> q1, Deque<Integer> q2) {
+        Deque<Integer> resultQ = new LinkedList<>();
         int remainder = 0;
         int sumDigit = 0;
-
-        String[] first = s1.split("");
-        String[] second = s2.split("");
-        int longer = Math.max(first.length, second.length);
-        for(int i = longer-1; i >= 0; i--) {
-
-        }
-
         while(!q1.isEmpty() || !q2.isEmpty() || remainder !=0) {
             int a = Optional.ofNullable(q1.pollLast()).orElse(0);
             int b = Optional.ofNullable(q2.pollLast()).orElse(0);
