@@ -1,8 +1,13 @@
 package kg.euler;
 
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Day0029 {
     public static void main(String[] args) {
-        long result = solution(2, 6);
+        //Map<Integer, List<int[]>> sqrMap = sqrNumbers(2, 100);
+        long result = solution(2, 100);
         System.out.println("result is " + result);
     }
 
@@ -10,15 +15,67 @@ public class Day0029 {
     // for 2 <= a <= 100
     // and 2 <= b <= 100 ?
     static long solution(int min, int max) {
-        int expAmtWithDups = (max-1) * (max - 1);
-
-        for(int i = min; i <= max; i++) {
+        Set<BigInteger> dups = new HashSet<>();
+        for (int i = min; i <= max; i++) {
             for(int j = min; j <= max; j++) {
-                if(i < j && i % j == 0) {
-                    expAmtWithDups --; //9518 wrong
-                }
+                BigInteger pow = BigInteger.valueOf(i).pow(j);
+                dups.add(pow);
             }
         }
-        return expAmtWithDups;
+        return dups.size();
     }
+
+//   unfortunately this didn't work
+//    static long solution(int min, int max, Map<Integer, List<int[]>> sqrMap) {
+//        int expAmtWithDups = (max-1) * (max - 1);
+//        System.out.println("total combs " + expAmtWithDups);
+//        int totalDups = 0;
+//        for(int i = min; i <= max; i++) {
+//            if (sqrMap.containsKey(i)) {
+//                List<int[]> roots = sqrMap.get(i);
+//                int howManyItersDup = 0;
+//                for(int j = 0; j < roots.size(); j++) {
+//                    //howManyItersDup = max / (roots.get(j)[1]);
+//                    for (int k = min + roots.get(j)[1]; k <= max; k+=(roots.get(j)[1])) {
+//                        System.out.println("idx beg is " + k);
+//                        howManyItersDup++;
+//                    }
+//                }
+//                totalDups += howManyItersDup;
+//                //int howManyItersDup = max / roots[1];
+//            }
+//        }
+//        System.out.println("totalDups " + totalDups);
+//
+//        //9181 wrong
+//        return expAmtWithDups - totalDups;
+//    }
+
+//    static Map<Integer, List<int[]>> sqrNumbers(int min, int limit) {
+//        Map<Integer, List<int[]>> sqrs = new HashMap<>();
+//        for (int i = min; i <= limit; i++) {
+//            for(int j = min; j <=limit; j++) {
+//                int pow = (int) Math.pow(i, j);
+//                if(pow <= limit) {
+//                    //List<int[]> ints = sqrs.get(pow);
+//                    int[] powComb = new int[2];
+//                    powComb[0] = i;
+//                    powComb[1] = j;
+//                    List<int[]> ints = sqrs.get(pow);
+//                    if(ints == null) {
+//                        sqrs.put(pow, sqrs.getOrDefault(pow, List.of(powComb)));
+//                    } else {
+//                        List<int[]> toUpd = new ArrayList<>();
+//                        toUpd.addAll(ints);
+//                        toUpd.add(powComb);
+//                        sqrs.put(pow, toUpd);
+//                    }
+//                } else {
+//                    break;
+//                }
+//            }
+//        }
+//        System.out.println(sqrs);
+//        return sqrs;
+//    }
 }
