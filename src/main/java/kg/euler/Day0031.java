@@ -1,5 +1,8 @@
 package kg.euler;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class Day0031 {
 
     final static int[] COINS = {1, 2, 5, 10, 20, 50, 100, 200};
@@ -27,5 +30,16 @@ public class Day0031 {
         int result = matrix[goalVal][amtOfNominals-1];
         System.out.println(result);
         return result;
+    }
+
+    static Set<Integer> splitNums(int value) {
+        int cur = value;
+        Set<Integer> nums = new LinkedHashSet<>();
+        while (cur >= 1) {
+            int digit = cur % 10;
+            nums.add(digit);
+            cur /= 10;
+        }
+        return nums;
     }
 }
