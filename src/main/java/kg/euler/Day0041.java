@@ -6,9 +6,10 @@ import java.util.Map;
 public class Day0041 {
 
     public static void main(String[] args) {
-        solution(9999999);
+        solution(7654321);
     }
 
+    // What is the largest n-digit pandigital prime that exists?
     static long solution(int limit) {
         int max = 0;
         for(int i = limit; i > 0; i = i-2) {
