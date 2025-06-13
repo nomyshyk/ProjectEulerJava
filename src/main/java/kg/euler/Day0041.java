@@ -6,19 +6,12 @@ import java.util.Map;
 public class Day0041 {
 
     public static void main(String[] args) {
-        solution(999999999);
+        solution(9999999);
     }
 
-    //static int[] setka = new int[999999999];
-
-    // What is the largest n-digit pandigital prime that exists?
     static long solution(int limit) {
         int max = 0;
         for(int i = limit; i > 0; i = i-2) {
-            if(i % 3 == 0 || i % 5 == 0 || i % 7 == 0) {
-                continue;
-            }
-
            if(isPandigit(i) && isPrime(i)) {
                max = i;
                break;
@@ -75,20 +68,6 @@ public class Day0041 {
                 return false;
             }
         }
-        //setka.put(num, true);
         return true;
     }
-
-//    static int fulfillSetka(int limit) {
-//        int curV = 2;
-//        int iter = 0;
-//        while (limit >= curV) {
-//            boolean prime = isPrime(curV);
-//            if(prime) {
-//                setka[iter++] = curV;
-//            }
-//            curV++;
-//        }
-//    }
-
 }
