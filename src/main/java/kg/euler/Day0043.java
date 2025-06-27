@@ -41,7 +41,7 @@ public class Day0043 {
             permVal = permutate(permVal);
         }
         System.out.println("result is " + result);
-        return 0;
+        return result;
     }
 
     static String permutate(String permutatingStr) {
