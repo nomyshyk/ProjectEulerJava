@@ -44,10 +44,6 @@ public class Day0044 {
         return LongStream.range(1, limit).map(p -> (p * (3 * p - 1)) / 2).boxed().toList();
     }
 
-    record PairDiff(long numA, long numB, long diff){
-
-    }
-
     static boolean isPentagonal(long value) {
         long s = Math.round(Math.sqrt(1 + 24 * value));
         return (s*s == 1 + 24 * value) && ((1 + s) % 6 == 0);
