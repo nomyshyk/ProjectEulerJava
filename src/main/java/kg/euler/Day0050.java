@@ -1,16 +1,12 @@
 package kg.euler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Day0050 {
 
-    static int limit = 100;
+    static int limit = 1_000_000;
     static List<Long> primeCache = new ArrayList<>();
-    static int[] dynamicTable = new int[limit];
-    static List<List<Integer>> dynamicDetails = new ArrayList<>(limit);
 
     public static void main(String[] args) {
         solution(limit);
@@ -20,40 +16,38 @@ public class Day0050 {
     static int solution(int limit) {
 
         getPrimeList(limit);
-        for(int i = 1; i <= limit; i++) {
-
+        int maxSumma = 0;
+        int maxCnt = 0;
+        int maxCombsForLimit = maxCombsForLimit(limit);
+        for(int i = 1; i <= maxCombsForLimit; i++) {
+            int summa = 0;
+            for(int j = i; j <= maxCombsForLimit; j++) {
+                summa += primeCache.get(j);
+                if(summa > limit) {
+                    break;
+                } else {
+                    if(summa > maxSumma && (j - i > maxCnt) && checkPrime(summa)) {
+                        maxSumma = summa;
+                        maxCnt = j - i;
+                    }
+                }
+            }
         }
-
-        return 0;
+        System.out.println("result is " + maxSumma);
+        return maxCnt;
     }
 
-    static int findSum(int num, int[] array) {
-        if(array[num] != 0) {
-            return array[num];
-        }
-        int curVal = num;
-        int combs = 0;
-        while (curVal > 0) {
-            if(array[curVal] != 0) {
-                combs += array[curVal];
+    static int maxCombsForLimit(int limit) {
+        int cur = 0;
+        int cnt = 0;
+        for(int i = 0; i < limit; i++) {
+            cur += primeCache.get(i);
+            if(cur >= limit) {
+                return cnt;
             }
-
-            for(int i = 0; i < primeCache.size(); i++) {
-                if(primeCache.get(i) > num) {
-                    break;
-                }
-            int pos = i;
-            }
-
+            cnt++;
         }
-
-//        for(int i = 0; i < primeCache.size(); i++) {
-//            if(primeCache.get(i) > num) {
-//                break;
-//            }
-//            int pos = i;
-//        }
-
+        return cnt;
     }
 
     static void getPrimeList(long num) {
