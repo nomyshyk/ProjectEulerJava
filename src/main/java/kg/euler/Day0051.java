@@ -24,7 +24,7 @@ public class Day0051 {
 
         long result = 0;
         outer:
-        for(int i = 0; i < limit; i++) {
+        for(int i = 1; i < limit; i++) {
             if(i % 2 == 0 || i % 5 == 0) {
                 continue ;
             }
@@ -33,15 +33,12 @@ public class Day0051 {
 
             for (int j = 0; j < myL.size(); j++) {
                 String alias = myL.get(j);
-                if(alias.equals("***") || alias.equals("******")) {
-                    continue;
-                }
                 if(cache.contains(alias)) {
                     continue;
                 }
                 int cnt = 0;
                 int notFound = 0;
-                List<String> primes = new ArrayList<>();
+                StringBuilder primes = new StringBuilder();
                 for (int k = 0; k < 10; k++) {
                     String replaceResult = alias.replace("*", String.valueOf(k));
                     Long longResult = Long.valueOf(replaceResult);
@@ -49,7 +46,7 @@ public class Day0051 {
                     String.valueOf(longResult).length() == replaceResult.length()
                     ) {
                         cnt++;
-                        primes.add(replaceResult);
+                        primes.append(replaceResult).append(" ");
                     } else {
                         notFound++;
                     }
@@ -58,7 +55,7 @@ public class Day0051 {
                         break;
                     }
                     if (cnt == matches) {
-                        result = Long.parseLong(primes.get(0));
+                        result = Long.parseLong( primes.substring(0, primes.indexOf(" ")));
                         System.out.println(primes);
                         break outer;
                     }
@@ -70,7 +67,8 @@ public class Day0051 {
     }
 
     static String replaceWithAsterisk(String value, String orig, int iter, List<String> pattern) {
-        if(value.length() == orig.length() && value.contains("*")) {
+        if(value.length() == orig.length() && value.contains("*") &&
+                !(value.equals("***") || value.equals("******"))) {
             pattern.add(value);
         }
         if(value.length() == orig.length() || iter == orig.length()-1) {
