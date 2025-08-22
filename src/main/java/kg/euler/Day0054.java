@@ -5,9 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,49 +29,19 @@ public class Day0054 {
         List<List<String>> parsedData = parseInput(inputLines("files/problem_0054.txt"));
         for(List<String> parsedRow : parsedData) {
             PlayerCards playerCards = splitToPlayers(parsedRow);
-            List<CardOnHand> cardOnHands = calcNominal(playerCards.cards2);
-            long calcSumma = calcSumma(cardOnHands);
+            CardOnHand cardOnHands = calcNominal(playerCards.cards2);
+            //long calcSumma = calcSumma(cardOnHands);
             System.out.println(cardOnHands);
-            System.out.println(calcSumma);
+            //System.out.println(calcSumma);
         }
         return 0;
     }
 
-    static long calcSumma(List<CardOnHand> cardOnHands) {
-        long summa = 0L;
-        outer:
-        for(int i = 0; i < cardOnHands.size(); i++) {
-            if(cardOnHands.get(i).category != null) {
-                return (long) (cardOnHands.get(i).sum * Math.pow(10, cardOnHands.get(i).category));
-            } else {
-//                if(cardOnHands.get(i).cnt == 4) {
-//                    summa += (cardOnHands.get(i).sum * Math.pow(10, 8));
-//                } else if () {
-//
-//                }
-                switch (cardOnHands.get(i).cnt) {
-                    case 4: summa += (cardOnHands.get(i).sum * Math.pow(10, 8)); break;
-//                    case 3:
-//                        if(cardOnHands.size() == 2) {
-//                            summa += (cardOnHands.get(i).sum * Math.pow(10, 3));
-//                        } else {
-//                            summa += (cardOnHands.get(i).sum * Math.pow(10, 3));
-//                        }
-//                        break;
-//                    case 2: summa += (cardOnHands.get(i).sum * Math.pow(10, 2)); break;
-                    case 1: summa += (cardOnHands.get(i).sum * Math.pow(10, 1)); break;
-                    default:
-                }
-            }
-        }
-        return summa;
-    }
-
-    static List<CardOnHand> calcNominal(List<String> playerCards) {
+    static CardOnHand calcNominal(List<String> playerCards) {
         Map<Character, Integer> cardSuit = new HashMap<>();
         Map<Integer, Integer> cardNomMap = new HashMap<>();
         List<Integer> vals = new ArrayList<>();
-        int[] retInt = new int[2];
+        //int[] retInt = new int[2];
         for (String card : playerCards) {
             char suitCard = card.charAt(card.length() - 1);
             String intCard = card.substring(0, card.length() - 1);
@@ -77,37 +50,69 @@ public class Day0054 {
             cardNomMap.put(cdNomInt, cardNomMap.getOrDefault(cdNomInt, 0) + 1);
             vals.add(cdNomInt);
         }
-        //System.out.println(cardSuit);
-        //System.out.println();
-        //System.out.println(cardNomMap);
-        int howManyDiffNoms = cardNomMap.size();
+
+        //Getting Pairs
+        int[] pairs = new int[2];
+        int idx = 0;
+
+        //TODO
+        List<Integer> orderedCards = cardNomMap.keySet().stream()
+                .map(p -> p * (int)Math.pow(15, cardNomMap.get(p)-1))
+                .sorted((x, y) -> Integer.compare(y,x)).toList();
+//        for(Map.Entry<Integer, Integer> entry : cardNomMap.entrySet()) {
+//
+//        }
+
+
+        PriorityQueue<Integer> orderedRepeatVals = new PriorityQueue<>(cardNomMap.values());
+        while (!orderedRepeatVals.isEmpty()) {
+            int firstVal = orderedRepeatVals.poll();
+            if(firstVal >= 2) {
+                pairs[idx] = firstVal;
+                idx++;
+            }
+        }
+
 
         // same suit
         if (isSameSuit(cardSuit)) {
             int summa = vals.stream().reduce(Integer::sum).get();
             // Royal flush
-            if (summa == (11 + 12 + 13 + 14)) {
-                return List.of(new CardOnHand(howManyDiffNoms, summa, true, 10));
+            if (summa == (10 + 11 + 12 + 13 + 14)) {
+                return new CardOnHand(CardComboNames.ROYAL_FLUSH, orderedCards);
             } else {
                 boolean ordered = isOrdered(vals);
                 // Straight Flush
                 if (ordered) {
-                    return List.of(new CardOnHand(howManyDiffNoms, summa, true, 9));
+                    return new CardOnHand(CardComboNames.STRAIGHT_FLUSH, orderedCards);
                 } else {
                     //Flush
-                    return List.of(new CardOnHand(howManyDiffNoms, summa, false, 6));
+                    return new CardOnHand(CardComboNames.FLUSH, orderedCards);
                 }
             }
         } else {
-            List<CardOnHand> cardOnHands = new ArrayList<>();
-            for (Map.Entry<Integer, Integer> entry : cardNomMap.entrySet()) {
-                int summa = vals.stream().filter(p -> p.equals(entry.getKey())).reduce(Integer::sum).get();
-                boolean isConsequent = entry.getValue() == 5 && isOrdered(vals);
-                CardOnHand cardOnHand = new CardOnHand(entry.getValue(), summa, isConsequent,
-                        isConsequent ? 5 : null);
-                cardOnHands.add(cardOnHand);
+            // not same suit
+            boolean ordered = isOrdered(orderedCards);
+            if(ordered) {
+                return new CardOnHand(CardComboNames.STRAIGHT, orderedCards);
             }
-            return cardOnHands;
+
+            if(pairs[0] == 4) {
+                return new CardOnHand(CardComboNames.FOUR_OF_A_KIND, orderedCards);
+            }
+            if(pairs[0] == 3 && pairs[1] == 2) {
+                return new CardOnHand(CardComboNames.FULL_HOUSE, orderedCards);
+            }
+            if(pairs[0] == 3) {
+                return new CardOnHand(CardComboNames.THREE_OF_A_KIND, orderedCards);
+            }
+            if(pairs[0] == 2 && pairs[1] == 2) {
+                return new CardOnHand(CardComboNames.TWO_PAIRS, orderedCards);
+            }
+            if(pairs[0] == 2) {
+                return new CardOnHand(CardComboNames.ONE_PAIR, orderedCards);
+            }
+            return new CardOnHand(CardComboNames.HIGH_CARD, orderedCards);
         }
     }
 
@@ -176,5 +181,10 @@ public class Day0054 {
 
     record PlayerCards (List<String> cards1, List<String> cards2){};
 
-    record CardOnHand (int cnt, int sum, boolean ordered, Integer category) {}
+    record CardOnHand (CardComboNames category, List<Integer> cards) {}
+
+    enum CardComboNames {
+        ROYAL_FLUSH, STRAIGHT_FLUSH, FOUR_OF_A_KIND, FULL_HOUSE, FLUSH,
+        STRAIGHT, THREE_OF_A_KIND, TWO_PAIRS, ONE_PAIR, HIGH_CARD
+    }
 }
