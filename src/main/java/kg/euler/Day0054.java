@@ -40,6 +40,7 @@ public class Day0054 {
     static CardOnHand calcNominal(List<String> playerCards) {
         Map<Character, Integer> cardSuit = new HashMap<>();
         Map<Integer, Integer> cardNomMap = new HashMap<>();
+        Map<Integer, List<Integer>> nominalCountListMap = new HashMap<>();
         List<Integer> vals = new ArrayList<>();
         //int[] retInt = new int[2];
         for (String card : playerCards) {
@@ -48,6 +49,10 @@ public class Day0054 {
             cardSuit.put(suitCard, cardSuit.getOrDefault(suitCard, 0) + 1);
             int cdNomInt = transformToVal(intCard);
             cardNomMap.put(cdNomInt, cardNomMap.getOrDefault(cdNomInt, 0) + 1);
+
+            List<Integer> tempArr = nominalCountListMap.getOrDefault(cdNomInt, new ArrayList<Integer>());
+            tempArr.add(cdNomInt);
+            nominalCountListMap.put(cdNomInt, nominalCountListMap.getOrDefault(cdNomInt, tempArr));
             vals.add(cdNomInt);
         }
 
@@ -56,8 +61,8 @@ public class Day0054 {
         int idx = 0;
 
         //TODO
-        List<Integer> orderedCards = cardNomMap.keySet().stream()
-                .map(p -> p * (int)Math.pow(15, cardNomMap.get(p)-1))
+        List<Integer> orderedCards = nominalCountListMap.keySet().stream()
+                .map(p -> p * (int)Math.pow(10, nominalCountListMap.get(p).size()-1))
                 .sorted((x, y) -> Integer.compare(y,x)).toList();
 //        for(Map.Entry<Integer, Integer> entry : cardNomMap.entrySet()) {
 //
