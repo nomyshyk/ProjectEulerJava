@@ -16,14 +16,26 @@ public class Day0056 {
     // what is the maximum digital sum?
     static long solution(int limitA, int limitB) {
         long maxDigit = 0;
-        for (int i = 1; i < limitA; i++) {
+        for (int i = 1; i <= limitA; i++) {
             BigInteger curVal = BigInteger.ONE;
-            for (int j = 1; j < limitB; j++) {
+            for (int j = 1; j <= limitB; j++) {
                 curVal = curVal.multiply(BigInteger.valueOf(i));
                 String toStr = curVal.toString();
-                //if(toStr)
+                int sumOfDigitsVar = sumOfDigits(toStr);
+                if(sumOfDigitsVar > maxDigit) {
+                    maxDigit = sumOfDigitsVar;
+                }
             }
         }
-        return 0;
+        System.out.println(maxDigit);
+        return maxDigit;
+    }
+
+    static int sumOfDigits(String string) {
+        int summa = 0;
+        for(int i = 0; i < string.length(); i++) {
+            summa += Integer.valueOf(string.substring(i, i+1));
+        }
+        return summa;
     }
 }
