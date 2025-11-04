@@ -1,13 +1,14 @@
 package kg.euler;
 
+import jdk.jshell.execution.Util;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Day0058 {
-    static List<Long> primeCache = new ArrayList<>();
 
     public static void main(String[] args) {
-        generatePrimeList(30000);
+        Utils.generatePrimeList(30000);
         long solution = solution(10);
         System.out.println("result is = " + solution);
     }
@@ -21,7 +22,7 @@ public class Day0058 {
         long iter = 1;
         while (perc >= max) {
             iter += 2;
-            if(iter > primeCache.get(primeCache.size()-1)) {
+            if(iter > Utils.primeCache.get(Utils.primeCache.size()-1)) {
                 throw new RuntimeException("Not enough primes generated");
             }
             long[] arr = new long[4];
@@ -31,7 +32,7 @@ public class Day0058 {
                     arr[i] = iter * iter;
                 } else {
                     arr[i] = arr[i+1] - iter + 1;
-                    if(checkPrime(arr[i])) {
+                    if(Utils.checkPrime(arr[i])) {
                         primeCnt++;
                     }
                 }
@@ -43,31 +44,5 @@ public class Day0058 {
             System.out.printf("perc = %f, primeCnt = %d, allNums = %d \n", perc, primeCnt, allNums);
         }
         return iter;
-    }
-
-    static void generatePrimeList(long num) {
-        int size = primeCache.size();
-        long lastVal = size == 0 ? 1 : primeCache.get(size - 1);
-        for(long i = lastVal + 1; i <= num; i++) {
-            if(checkPrime(i)) {
-                primeCache.add(i);
-            }
-        }
-    }
-
-    static boolean checkPrime(long num) {
-        if(num == 1) {
-            return false;
-        }
-        for(int i = 0; i < primeCache.size(); i++) {
-            long iValue = primeCache.get(i);
-            if(!(iValue < (num/2) + 1)) {
-                break;
-            }
-            if(num % iValue == 0) {
-                return false;
-            }
-        }
-        return true;
     }
 }
