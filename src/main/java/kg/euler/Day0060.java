@@ -18,6 +18,8 @@ public class Day0060 {
 
     //static Set<Utils.Pair<Long, Long>> primePairs = new HashSet<>();
     static Map<Integer, List<long[]>> levelsOf = new HashMap<>();
+
+    static Map<Long, List<Long>> mapToPrimes = new HashMap<>();
     public static void main(String[] args) {
 
         List<Long> primes = Utils.generatePrimeList(1000);
@@ -34,8 +36,7 @@ public class Day0060 {
                 if(i >= j) {
                     continue;
                 }
-                if(Utils.checkPrime(Long.parseLong(String.format("%s%s",primes.get(i),primes.get(j))))
-                    && Utils.checkPrime(Long.parseLong(String.format("%s%s",primes.get(j),primes.get(i))))) {
+                if(checkChangedOrder(primes.get(i), primes.get(j))) {
                     System.out.printf("%s %s are prime when permutated \n", primes.get(i), primes.get(j));
                     //primePairs.add(new Utils.Pair<>(primes.get(i), primes.get(j)));
                     long arr[] = new long[2];
@@ -46,6 +47,11 @@ public class Day0060 {
             }
         }
         levelsOf.put(2, listOfLong);
+
+        long[] p1 = {3, 8};
+        long[] p2 = {3, 109};
+        long[] results = detectPairs(p1, p2);
+
         return 0;
     }
 
@@ -67,6 +73,11 @@ public class Day0060 {
         return false;
     }
 
+    static boolean checkChangedOrder(long a, long b) {
+        return Utils.checkPrime(Long.parseLong(String.format("%s%s",a, b)))
+                && Utils.checkPrime(Long.parseLong(String.format("%s%s",b, a)));
+    }
+
     // compare [3,7] with allPairs
     static boolean searchInList(long[] pair, List<long[]> pairsList) {
         for(int j = 0; j < pairsList.size(); j++) {
@@ -78,5 +89,67 @@ public class Day0060 {
             }
         }
         return false;
+    }
+
+    static long[] detectPairs(long[] pair1, long[] pair2) {
+        // pair1.size >= 2
+        // pair2.size = 2
+        List<long[]> newPairList = new ArrayList<>();
+        Map<Long, Integer> map = new HashMap();
+        long dupValue = 0;
+        int cntDuplicates = 0;
+        // add records to hashmap to identify if lists have something in common
+        for(int i = 0; i < pair1.length; i++){
+            map.put(pair1[i], map.getOrDefault(pair1[i], 0) + 1);
+        }
+        for(int i = 0; i < pair1.length; i++){
+            map.put(pair2[i], map.getOrDefault(pair2[i], 0) + 1);
+        }
+
+        // verify duplicate values
+        for(Map.Entry<Long, Integer> entry : map.entrySet()) {
+            if(entry.getValue() > 1) {
+                dupValue = entry.getKey();
+                cntDuplicates++;
+            }
+        }
+        // if no duplicates return
+        if(cntDuplicates != 1) {
+            return null;
+        }
+
+        // if theres something in common add new values to list
+        int cntPrimesAgain = 0;
+
+        Set<String> cached=new HashSet<>();
+        for(Map.Entry<Long, Integer> entry1 : map.entrySet()) {
+            for(Map.Entry<Long, Integer> entry2 : map.entrySet()) {
+                // don't check common value
+                if(entry1.getKey() != dupValue && entry2.getKey() != dupValue
+                 && !entry1.getKey().equals(entry2.getKey())) {
+                    // compare all combinations
+                    long[] pair = new long[2];
+                    pair[0] = entry1.getKey() > entry2.getKey() ? entry2.getKey() : entry1.getKey();
+                    pair[1] = entry1.getKey() < entry2.getKey() ? entry2.getKey() : entry1.getKey();
+                    // if numbers are prime after changing order
+                    if(checkChangedOrder(pair[0], pair[1]) &&
+                            !cached.contains("%s-%s".formatted(pair[0], pair[1]))) {
+                        cached.add("%s-%s".formatted(pair[0], pair[1]));
+                        cntPrimesAgain++;
+                    }
+                }
+            }
+        }
+
+        if(cntPrimesAgain == pair1.length - 1) {
+            int iter = 0;
+            long[] primeNewArr = new long[map.size()];
+            for(Map.Entry<Long, Integer> entry : map.entrySet()) {
+                primeNewArr[iter++] = entry.getKey();
+            }
+            return primeNewArr;
+        }
+
+        return null;
     }
 }
